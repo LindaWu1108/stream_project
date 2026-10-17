@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}誰在觀看？ - StreamProject{% endblock title%}
+
+{% block content%}
+<div class="container mt-5 text-center">
+    <h2 class="mb-2">🎬 誰在觀看？</h2>
+    <p class="text-muted">
+        登入帳號：<strong>{{ email }}</strong>
+        {% if subscription %}
+        ｜目前方案：<span class="badge bg-primary">{{ subscription[6] }} (NT${{ subscription[7] }}/月，人數上限 {{ subscription[8] }} 人)</span>
+        ｜目前已建立：<strong>{{ profiles|length }} / {{ max_screens }} 人</strong>
+        ｜到期日：{{ subscription[3] }}
+        {% endif %}
+    </p>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-warning mx-auto" style="max-width: 650px;">
+        {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="row justify-content-center mt-4 mb-5">
+        {% for p in profiles %}
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <div style="font-size: 3rem;">{% if p[3] %}🧒{% else %}🧑{% endif %}</div>
+                        <h4 class="card-title mt-2">{{ p[2] }}</h4>
+                        <p class="text-muted mb-2">Profile #{{ p[1] }}</p>
+                        {% if p[3] %}
+                        <span class="badge bg-warning text-dark mb-3">兒童模式（僅顯示普遍級/保護級）</span>
+                        {% else %}
+                        <span class="badge bg-secondary mb-3">一般成人模式（全分級）</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <form method="post" action="{{ url_for('api.profiles') }}" class="mb-2">
+                            <input type="hidden" name="action" value="select">
+                            <input type="hidden" name="profile_no" value="{{ p[1] }}">
+                            <button type="submit" class="btn btn-outline-primary w-100">開始觀看</button>
+                        </form>
+                        {% if p[1] > 1 %}
+                        <form method="post" action="{{ url_for('api.profiles') }}" onsubmit="return confirm('確定要刪除使用者「{{ p[2] }}」嗎？');">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="profile_no" value="{{ p[1] }}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm w-100">移除此使用者</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card mx-auto shadow-sm" style="max-width: 540px;">
+        <div class="card-header bg-light">
+            <strong>➕ 新增此帳號底下的使用者 (Profile) — 名額：{{ profiles|length }} / {{ max_screens }}</strong>
+        </div>
+        <div class="card-body">
+            {% if profiles|length >= max_screens %}
+                {% if max_screens >= 4 %}
+                <div class="text-danger mb-1">
+                    ⚠️ 您目前的<strong>【{{ subscription[6] if subscription else '高級' }}】</strong>已是最高等級方案（最多 <strong>{{ max_screens }}</strong> 位使用者），無法再升級或新增更多成員！
+                </div>
+                <small class="text-muted">若要更換成員，請先點擊上方卡片的「移除此使用者」。</small>
+                {% else %}
+                <div class="text-danger mb-2">
+                    ⚠️ 您目前的<strong>【{{ subscription[6] if subscription else '基本' }}】</strong>方案最多只能建立 <strong>{{ max_screens }}</strong> 位使用者，目前已達人數上限！
+                </div>
+                <a href="{{ url_for('bookstore.orderlist') }}" class="btn btn-warning btn-sm">前往升級訂閱方案 (Plan)</a>
+                {% endif %}
+            {% else %}
+            <form method="post" action="{{ url_for('api.profiles') }}" class="row g-2 align-items-center">
+                <input type="hidden" name="action" value="add">
+                <div class="col-sm-6">
+                    <input type="text" name="profile_name" class="form-control" placeholder="輸入暱稱（例如：妹妹）" required>
+                </div>
+                <div class="col-sm-3">
+                    <select name="is_kid" class="form-select">
+                        <option value="0">成人</option>
+                        <option value="1">兒童</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-success w-100">新增</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('api.logout') }}" class="btn btn-outline-secondary btn-sm">登出帳號</a>
+    </div>
+</div>
+{% endblock content%}

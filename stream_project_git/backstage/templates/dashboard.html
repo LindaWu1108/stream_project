@@ -1,0 +1,123 @@
+{% extends "backstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+{% block title %}後台資料分析 - StreamProject{% endblock title%}
+{% block content %}
+
+<div class="container-xxl my-4 p-3 bg-body rounded shadow-sm">
+  <div id="dashboard">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab">各月訂閱營收分析</button>
+        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab">各類別影片觀看熱度</button>
+        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab">會員訂閱消費與觀看排行</button>
+      </div>
+    </nav>
+  </div>
+  <br/>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel">
+      <center>
+        <div id="maina" class="container-fluid" style="width:1000px;height:460px"></div>
+      </center>
+    </div>
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel">
+      <center>
+        <div id="mainb" class="container-fluid" style="width:650px;height:460px"></div>
+      </center>
+    </div>
+    <div class="tab-pane fade" id="nav-contact" role="tabpanel">
+      <center>
+        <div id="mainc" class="container-fluid" style="width:1000px;height:460px"></div>
+      </center>
+    </div>
+  </div>
+</div>
+
+<script>
+  var chartDoma = document.getElementById('maina');
+  var myCharta = echarts.init(chartDoma);
+  var data = {{revenue|tojson}};
+  var optiona = {
+    title: { text: '各月訂閱營收總額分析 (Subscription)' },
+    tooltip: {},
+    legend: { data: ['訂閱營收 (NT$)'] },
+    xAxis: { data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'] },
+    yAxis: {},
+    series: [{
+      name: '訂閱營收 (NT$)',
+      type: 'bar',
+      data: data,
+      label: { show: true, position: 'top' }
+    }]
+  };
+
+  var chartDomb = document.getElementById('mainb');
+  var myChartb = echarts.init(chartDomb);
+  var datab = {{datab|tojson}};
+  var optionb = {
+    title: { text: '各類別 (Genre) 觀看次數佔比', left: 'center' },
+    tooltip: { trigger: 'item' },
+    series: [{
+      type: 'pie',
+      data: datab,
+      radius: ['35%', '65%']
+    }]
+  };
+
+  var chartDomc = document.getElementById('mainc');
+  var myChartc = echarts.init(chartDomc);
+  var datac = {{datac|tojson}};
+  var nameList = {{nameList|tojson}};
+  var countList = {{countList|tojson}};
+  var optionc = {
+    title: { text: '會員累積訂閱金額與觀看影片數排行' },
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: { show: true },
+    grid: {
+      left: '3%',
+      right: '8%',
+      bottom: '5%',
+      containLabel: true
+    },
+    xAxis: { max: 'dataMax' },
+    yAxis: {
+      type: 'category',
+      data: nameList,
+      inverse: true,
+      axisLabel: {
+        interval: 0,
+        fontSize: 13
+      }
+    },
+    series: [
+      {
+        name: '累積訂閱金額 (NT$)',
+        type: 'bar',
+        data: datac,
+        label: { show: true, position: 'right' }
+      },
+      {
+        name: '累積觀看部數',
+        type: 'bar',
+        data: countList,
+        label: { show: true, position: 'right' }
+      }
+    ]
+  };
+
+  optiona && myCharta.setOption(optiona);
+  optionb && myChartb.setOption(optionb);
+  optionc && myChartc.setOption(optionc);
+
+  // 切換頁籤時自動調整圖表寬度，確保完整顯示
+  document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function (tabEl) {
+    tabEl.addEventListener('shown.bs.tab', function () {
+      myCharta.resize();
+      myChartb.resize();
+      myChartc.resize();
+    });
+  });
+</script>
+{% endblock content %}

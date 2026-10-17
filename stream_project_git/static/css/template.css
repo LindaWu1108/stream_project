@@ -1,0 +1,196 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: #EFEFEF;
+    width: 100%;
+    height: 100vh;
+}
+.index_pic{
+    height: 220px;
+    margin: auto;
+    display: block;
+    margin-bottom: 20px;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.index_title{
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    margin-top: 20px;
+}
+.book_title{
+    text-align: center;
+    font-size: 34px;
+    margin-right: 30px;
+}
+.register_title{
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+.index_btn{
+    min-width: 150px;
+    height: auto;
+    padding: 12px 28px;
+    font-size: 22px;
+    margin: 10px 12px;
+    background-color: #2b3a67;
+    color: white;
+    font-weight: bolder;
+    border-radius: 12px;
+    border: 0px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(43, 58, 103, 0.25);
+    transition: all 0.2s ease;
+}
+.index_btn:hover{
+    background-color: #e63946;
+    transform: translateY(-2px);
+}
+.btn_div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.option_div{
+    margin: 0px 10px 0px 0px;
+}
+.form_div{
+    text-align: center;
+}
+input{
+    height: 34px;
+    width: 220px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 0px;
+}
+.register_btn{
+    min-width: 110px;
+    height: auto;
+    padding: 8px 20px;
+    margin: 0 6px;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #2b3a67;
+    color: white;
+    border-radius: 10px;
+    border: 0px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.register_btn:hover{
+    background-color: #e63946;
+}
+.icon{
+    height: 100px;
+    margin: auto;
+    display: block;
+    border-radius: 16px;
+}
+.same_accoount{
+    color: red;
+    margin-top: 1px;
+}
+.book_table{
+    display: flex;
+    justify-content: center;
+    border-color: black !important;
+    margin: 10px;
+}
+.left{
+    float:left;
+}
+.cart{
+    height: 40px;
+    position: relative;
+    top: 20px;
+}
+.cart:hover{
+    position: relative;
+    top: 15px;
+}
+.cart_input{
+    width: 40px;
+}
+.logout{
+    height: 30px;
+    position: relative;
+    top: 30px;
+    left: 30px;
+}
+.logout:hover{
+    position: relative;
+    top: 20px;
+}
+.id_input{
+    background-color: #d7d7d7;
+}
+a{
+    color: black;
+    text-decoration: none;
+}
+.welcome{
+    margin: 0px;
+    font-size: 16px;
+}
+button{
+    cursor: pointer;
+}
+.empty{
+    min-height: 400px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+.empty_pic{
+    margin-top: 50px;
+    height: 200px;
+}
+.total{
+    text-align: right;
+    font-size: 20px;
+    
+}
+.dash_logout{
+    height: 30px;
+    position: relative;
+    top: 30px;
+    left: 90vw;
+    margin: 5px;
+
+}
+.dash_logout:hover{
+    position: relative;
+    top: 20px;
+    left: 90vw;
+}
+
+.dash_manager{
+    height: 40px;
+    position: relative;
+    top: 30px;
+    left: 90vw;
+    margin: 5px;
+}
+.dash_manager:hover{
+    position: relative;
+    top: 20px;
+    left: 90vw;
+}
+.outer_div{
+    background-color: #d5d1ca;
+    padding: 70px 50px;
+    border-radius: 10px;
+    border: 5px solid #d4c6b1;
+}
+input{
+    background-color: #ebebeb;
+	border-bottom: 2px solid #a29074;
+}

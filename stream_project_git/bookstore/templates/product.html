@@ -1,0 +1,77 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}{{ data.title }} - 觀看影片{% endblock title%}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- 左側：影片詳細資訊 -->
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">🎬 {{ data.title }}</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>影片編號 (movieId)：</strong> {{ data.movieId }}</li>
+                    <li class="list-group-item"><strong>所屬類別 (Genre)：</strong> {{ data.genres }}</li>
+                    <li class="list-group-item"><strong>片長 (duration)：</strong> {{ data.duration }} 分鐘</li>
+                    <li class="list-group-item"><strong>年齡分級 (rating)：</strong> <span class="badge bg-secondary">{{ data.rating }}</span></li>
+                    <li class="list-group-item"><strong>全站平均評分：</strong> ⭐ {{ data.avg_rating }}</li>
+                    <li class="list-group-item">
+                        <strong>🕒 您的歷次觀看時間點 (Watch_Time 多值屬性)：</strong>
+                        <div class="mt-2">
+                            {% if data.watch_times %}
+                                {% for wt in data.watch_times %}
+                                <div class="badge bg-info text-dark mb-1 d-inline-block me-1">{{ wt }}</div>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-muted">尚無觀看紀錄</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-outline-secondary w-100">← 返回影片大廳</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側：模擬播放器與新增觀看紀錄 (Watch & Watch_Time) -->
+        <div class="col-md-7 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">▶ 觀看進度與評分登記（觀看者：{{ user }}）</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('bookstore.cart') }}">
+                        <input type="hidden" name="movie_id" value="{{ data.movieId }}">
+
+                        <div class="mb-3">
+                            <label class="form-label"><strong>1. 目前觀看進度 (progress, 0% ~ 100%)：</strong></label>
+                            <input type="number" name="progress" class="form-control" min="0" max="100" value="{{ data.my_progress }}" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label"><strong>2. 給予評分 (rating, 1 ~ 5 顆星)：</strong></label>
+                            <select name="rating" class="form-select">
+                                {% for s in [5, 4, 3, 2, 1] %}
+                                <option value="{{ s }}" {% if data.my_rating == s %}selected{% endif %}>{{ s }} 顆星 ({{ '★' * s }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="alert alert-light border small text-muted mb-3">
+                            🕒 按下儲存時，系統會自動將<strong>當下日期與時間點（年-月-日 時:分:秒）</strong>新增一筆至 <code>Watch_Time</code> 多值屬性資料表中！
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">💾 儲存觀看進度與評分（並記錄當下觀看時間點）</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content%}

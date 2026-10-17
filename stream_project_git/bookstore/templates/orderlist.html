@@ -1,0 +1,89 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}訂閱紀錄與方案 - StreamProject{% endblock title%}
+
+{% block content %}
+<div class="container-xl mt-4">
+    <h3 class="mb-3">💳 帳號訂閱紀錄與方案管理 ({{ email }})</h3>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info">
+        {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- 目前方案與變更/續訂方案卡片 -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <strong>🔄 變更／續訂方案 (Plan)</strong>
+            {% if current_sub %}
+            <span>目前方案：【{{ current_sub.planName }}】（已建立 {{ profile_count }} / {{ current_sub.maxScreens }} 人）</span>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if current_sub and current_sub.maxScreens >= 4 %}
+            <div class="alert alert-success py-2 mb-3">
+                🌟 您目前訂閱的<strong>【{{ current_sub.planName }}】</strong>已是本平台最高等級方案（上限 4 人）！您仍可於下方辦理續約或調整方案。
+            </div>
+            {% endif %}
+            <form method="post" action="{{ url_for('bookstore.orderlist') }}" class="row g-3 align-items-center">
+                <div class="col-md-8">
+                    <select name="plan_id" class="form-select">
+                        {% for p in plans %}
+                        <option value="{{ p[0] }}" {% if current_sub and current_sub.planId == p[0] %}selected{% endif %}>
+                            【{{ p[0] }}】{{ p[1] }} — 月費 NT${{ p[2] }}（人數上限 {{ p[3] }} 人）
+                            {% if current_sub and current_sub.planId == p[0] %} 👈 目前方案{% endif %}
+                            {% if p[3] >= 4 %} ⭐ 最高等級{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-success w-100">確認變更／續約 30 天</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 歷史訂閱紀錄表 (Subscription) -->
+    <table class="table table-bordered table-striped bg-white shadow-sm text-center align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>訂閱編號 (subId)</th>
+                <th>訂閱方案 (planName)</th>
+                <th>人數上限 (maxScreens)</th>
+                <th>付款金額 (amount)</th>
+                <th>付款日期 (payDate)</th>
+                <th>到期日 (endDate)</th>
+                <th>狀態 (status)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in data %}
+            <tr>
+                <td>{{ s.subId }}</td>
+                <td><strong>{{ s.planName }}</strong> ({{ s.planId }})</td>
+                <td>{{ s.maxScreens }} 人</td>
+                <td>NT${{ s.amount }}</td>
+                <td>{{ s.payDate }}</td>
+                <td>{{ s.endDate }}</td>
+                <td>
+                    <span class="badge {% if s.status in ['使用中', 'Active'] %}bg-success{% else %}bg-secondary{% endif %}">
+                        {{ s.status }}
+                    </span>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-muted py-3">尚無訂閱紀錄</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

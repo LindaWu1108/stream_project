@@ -1,0 +1,70 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}我的觀看紀錄 - StreamProject{% endblock title%}
+
+{% block content %}
+<div class="container-xl mt-4">
+    <h3 class="mb-3">📺 {{ user }} 的觀看紀錄 (Watch & Watch_Time)</h3>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-success">
+        {% for m in messages %}{{ m }}{% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('bookstore.cart') }}">
+        <table class="table table-bordered table-hover bg-white shadow-sm align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>影片編號</th>
+                    <th>片名 (title)</th>
+                    <th>分級</th>
+                    <th>觀看進度 (progress)</th>
+                    <th>我的評分 (rating)</th>
+                    <th>歷次觀看時間點 (Watch_Time)</th>
+                    <th>觀看次數</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr class="text-center">
+                    <td>{{ item.movieId }}</td>
+                    <td><strong>{{ item.title }}</strong><br/><small class="text-muted">片長 {{ item.duration }} 分鐘</small></td>
+                    <td><span class="badge bg-secondary">{{ item.age_rating }}</span></td>
+                    <td style="width: 16%;">
+                        <div class="progress mb-1" style="height: 12px;">
+                            <div class="progress-bar bg-success" style="width: {{ item.progress }}%;"></div>
+                        </div>
+                        <small>{{ item.progress }}%</small>
+                    </td>
+                    <td>⭐ {{ item.user_rating }}</td>
+                    <td class="text-start" style="max-width: 280px;">
+                        <small>{{ item.watch_times }}</small>
+                    </td>
+                    <td><span class="badge bg-primary">{{ item.watch_count }} 次</span></td>
+                    <td>
+                        <a href="{{ url_for('bookstore.bookstore', pid=item.movieId) }}" class="btn btn-sm btn-outline-primary me-1">繼續觀看</a>
+                        <button class="btn btn-sm btn-outline-danger" type="submit" value="{{ item.movieId }}" name="delete"
+                                onclick="return confirm('確定要刪除《{{ item.title }}》的觀看紀錄嗎？')">
+                            刪除紀錄
+                        </button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                        目前這位使用者（{{ user }}）還沒有任何觀看紀錄喔！<a href="{{ url_for('bookstore.bookstore') }}">去影片大廳看看</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock content%}

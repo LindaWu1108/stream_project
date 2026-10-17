@@ -1,0 +1,68 @@
+{% extends "backstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}訂閱與觀看紀錄 - StreamProject 後台{% endblock title %}
+
+{% block content %}
+<div class="container-xxl mt-4">
+    <h3 class="mb-3">💳 全站會員訂閱紀錄 (Subscription & Plan)</h3>
+    <table class="table table-bordered table-striped bg-white shadow-sm text-center align-middle mb-5">
+        <thead class="table-dark">
+            <tr>
+                <th>訂閱編號 (subId)</th>
+                <th>會員帳號 (email)</th>
+                <th>訂閱方案 (planName)</th>
+                <th>付款金額 (amount)</th>
+                <th>付款日期 (payDate)</th>
+                <th>到期日 (endDate)</th>
+                <th>狀態 (status)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in orderData %}
+            <tr>
+                <td>{{ i.subId }}</td>
+                <td>{{ i.email }}</td>
+                <td><strong>{{ i.planName }}</strong></td>
+                <td>NT${{ i.amount }}</td>
+                <td>{{ i.payDate }}</td>
+                <td>{{ i.endDate }}</td>
+                <td>
+                    <span class="badge {% if i.status == 'Active' %}bg-success{% else %}bg-secondary{% endif %}">
+                        {{ i.status }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="mb-3">📺 全站使用者觀看與評分紀錄 (Watch & Watch_Time)</h3>
+    <table class="table table-bordered table-hover bg-white shadow-sm text-center align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>所屬帳號 (email)</th>
+                <th>觀看者 (profileName)</th>
+                <th>影片片名 (title)</th>
+                <th>觀看進度 (progress)</th>
+                <th>評分 (rating)</th>
+                <th>歷次觀看時間點 (Watch_Time)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in watchLogs %}
+            <tr>
+                <td>{{ w.email }}</td>
+                <td><strong>{{ w.profileName }}</strong></td>
+                <td>{{ w.title }}</td>
+                <td>{{ w.progress }}%</td>
+                <td>⭐ {{ w.rating }}</td>
+                <td><small>{{ w.total_minutes }}</small></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

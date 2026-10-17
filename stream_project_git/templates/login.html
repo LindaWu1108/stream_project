@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}會員登入 - StreamProject{% endblock title%}
+
+{% block content%}
+<div class="position-absolute top-50 start-50 translate-middle outer_div">
+    <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}?v=2"></a>
+    <h1 class="register_title mb-3 mt-3">串流平台登入</h1>
+    <p class="text-muted text-center" style="font-size: 0.85rem;">
+        家庭測試帳號：<code>family@example.com</code>（密碼 <code>1234</code>）<br/>
+        管理員帳號：<code>admin@example.com</code>（密碼 <code>admin</code>）
+    </p>
+    <div class="form_div">
+        <form method="post" action="{{ url_for('api.login') }}">
+            <p class="mb-4">
+                Email：<input type="text" name="account" placeholder="family@example.com" required/>
+            </p>
+            <p class="mb-4">
+                密碼：<input type="password" name="password" placeholder="1234" required/>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <p class="same_accoount">
+                    {% for i in messages %}
+                        {{ i }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+                {% endwith %}
+            </p>
+            <p class="mb-4">
+                <a href="{{ url_for('index') }}">
+                    <button type="button" class="register_btn">回上頁</button>
+                </a>
+                <button type="submit" class="register_btn">登入</button>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock content%}

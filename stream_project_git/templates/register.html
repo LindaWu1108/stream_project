@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}註冊訂閱 - StreamProject{% endblock title%}
+
+{% block content%}
+<div class="position-absolute top-50 start-50 translate-middle outer_div">
+    <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}?v=2"></a>
+    <h1 class="register_title mb-3 mt-3">註冊帳號與訂閱方案</h1>
+
+    <div class="form_div">
+        <form method="post" action="{{ url_for('api.register') }}">
+            <p class="mb-3">
+                主使用者名稱 (Profile)：<input type="text" name="username" placeholder="例如：爸爸、小華" required/>
+            </p>
+
+            <p class="mb-3">
+                帳號 (Email)：<input type="email" name="account" placeholder="example@gmail.com" required/>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <p class="same_accoount">
+                    {% for m in messages %}{{ m }}{% endfor %}
+                </p>
+                {% endif %}
+                {% endwith %}
+            </p>
+
+            <p class="mb-3">
+                密碼：<input type="password" name="password" required/>
+            </p>
+
+            <div class="btn_div mb-4" style="margin-bottom: 1rem;">
+                <p class="option_div">選擇訂閱方案 (Plan)：</p>
+                <select name="plan_id">
+                    {% for p in plans %}
+                    <option value="{{ p[0] }}">{{ p[1] }} - NT${{ p[2] }}/月（上限 {{ p[3] }} 人）</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <p>
+                <a href="{{ url_for('index') }}">
+                    <button type="button" class="register_btn">回上頁</button>
+                </a>
+                <button type="submit" class="register_btn">註冊並訂閱</button>
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock content%}

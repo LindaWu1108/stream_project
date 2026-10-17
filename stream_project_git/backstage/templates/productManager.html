@@ -1,0 +1,123 @@
+{% extends "backstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}影片管理 - StreamProject 後台{% endblock title %}
+
+{% block content %}
+<script>
+    $(document).ready(function(){
+        $("#keyword").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#product tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+<div class="container-xxl mt-4">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info">
+        {% for m in messages %}{{ m }}{% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">🎬 影片庫管理 (Movie & Belong)</h3>
+        <div class="d-flex">
+            <input class="form-control me-2" id="keyword" placeholder="快速篩選影片..." style="width: 260px;">
+            <button type="button" class="btn btn-success text-nowrap" data-bs-toggle="modal" data-bs-target="#addMovieModal">
+                ➕ 新增影片
+            </button>
+        </div>
+    </div>
+
+    <!-- 新增影片 Modal -->
+    <form method="post" action="{{ url_for('manager.add') }}">
+        <div class="modal fade" id="addMovieModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">新增影片 (Movie)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">影片片名 (title)</label>
+                            <input type="text" class="form-control" name="pname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">片長（分鐘, duration）</label>
+                            <input type="number" class="form-control" name="price" value="120" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">年齡分級 (rating)</label>
+                            <select class="form-select" name="category" required>
+                                <option value="普遍級">普遍級</option>
+                                <option value="保護級">保護級</option>
+                                <option value="輔導12級">輔導12級</option>
+                                <option value="輔導15級">輔導15級</option>
+                                <option value="限制級">限制級</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">所屬類別 (Belong -> Genre，可複選)</label><br/>
+                            {% for g in genres %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="genre_ids" value="{{ g[0] }}" id="g_{{ g[0] }}">
+                                <label class="form-check-label" for="g_{{ g[0] }}">{{ g[1] }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-success">確定新增</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- 影片列表 -->
+    <form method="post" action="{{ url_for('manager.productManager') }}">
+        <table class="table table-bordered table-hover bg-white shadow-sm text-center align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>影片編號 (movieId)</th>
+                    <th>片名 (title)</th>
+                    <th>片長 (duration)</th>
+                    <th>年齡分級 (rating)</th>
+                    <th>類別 (Genre)</th>
+                    <th>平均評分</th>
+                    <th colspan="2">操作</th>
+                </tr>
+            </thead>
+            <tbody id="product">
+                {% for i in book_data %}
+                <tr>
+                    <td>{{ i.movieId }}</td>
+                    <td><strong>{{ i.title }}</strong></td>
+                    <td>{{ i.duration }} 分鐘</td>
+                    <td><span class="badge bg-secondary">{{ i.rating }}</span></td>
+                    <td>{{ i.genres }}</td>
+                    <td>⭐ {{ i.avg_rating }}</td>
+                    <td>
+                        <button type="submit" value="{{ i.movieId }}" name="edit" class="btn btn-sm btn-outline-primary">編輯</button>
+                    </td>
+                    <td>
+                        <button type="submit" value="{{ i.movieId }}" name="delete"
+                                onclick="return confirm('確定要刪除《{{ i.title }}》嗎？')"
+                                class="btn btn-sm btn-outline-danger">刪除</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock content %}
