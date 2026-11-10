@@ -1,0 +1,54 @@
+{% extends "backstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}編輯影片 - StreamProject 後台{% endblock title%}
+
+{% block content%}
+<div class="container mt-4" style="max-width: 700px;">
+    <h3 class="mb-3">✏️ 編輯影片資訊 ({{ data.movieId }})</h3>
+    <form method="post" action="{{ url_for('manager.edit') }}">
+        <table class="table table-bordered bg-white shadow-sm">
+            <tr>
+                <th style="width: 30%;">影片編號 (movieId)</th>
+                <td><input class="form-control" type="text" value="{{ data.movieId }}" name="pid" readonly></td>
+            </tr>
+            <tr>
+                <th>影片片名 (title)</th>
+                <td><input class="form-control" type="text" value="{{ data.title }}" name="pname" required></td>
+            </tr>
+            <tr>
+                <th>片長（分鐘, duration）</th>
+                <td><input class="form-control" type="number" value="{{ data.duration }}" name="price" min="1" required></td>
+            </tr>
+            <tr>
+                <th>年齡分級 (rating)</th>
+                <td>
+                    <select class="form-select" name="category">
+                        {% for r in ['普遍級', '保護級', '輔導12級', '輔導15級', '限制級'] %}
+                        <option value="{{ r }}" {% if data.rating == r %}selected{% endif %}>{{ r }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>所屬類別 (Genre)</th>
+                <td>
+                    {% for g in genres %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="genre_ids" value="{{ g[0] }}"
+                               id="edit_g_{{ g[0] }}" {% if g[0] in selected_genres %}checked{% endif %}>
+                        <label class="form-check-label" for="edit_g_{{ g[0] }}">{{ g[1] }}</label>
+                    </div>
+                    {% endfor %}
+                </td>
+            </tr>
+        </table>
+        <div class="text-center">
+            <button class="btn btn-success me-2" type="submit">確定修改</button>
+            <a href="{{ url_for('manager.productManager') }}" class="btn btn-outline-secondary">返回影片管理</a>
+        </div>
+    </form>
+</div>
+{% endblock content%}

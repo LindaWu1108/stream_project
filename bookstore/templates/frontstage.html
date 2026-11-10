@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/offcanvas.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='img/home.png') }}?v=3" type="image/png">
+    <script src="../static/offcanvas.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+    <title>{% block title %}{% endblock title %}</title>
+    <style>
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: #ffffff !important;
+            border-bottom: 3px solid #0dcaf0;
+            padding-bottom: 5px;
+        }
+    </style>
+    {% endblock head %}
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <div class="container-fluid container-xxl">
+            <a class="navbar-brand" href="{{ url_for('bookstore.bookstore') }}">🎬 StreamProject 串流平台</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'bookstore.bookstore' %}active fw-bold text-white{% endif %}"
+                           href="{{ url_for('bookstore.bookstore') }}">影片導覽</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'bookstore.cart' %}active fw-bold text-white{% endif %}"
+                           href="{{ url_for('bookstore.cart') }}">我的觀看紀錄</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'bookstore.orderlist' %}active fw-bold text-white{% endif %}"
+                           href="{{ url_for('bookstore.orderlist') }}">訂閱紀錄與方案</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav me-3 mb-2 mb-lg-0 align-items-center">
+                    <li class="text-white text-nowrap me-3">目前觀看者：<strong>{{ user }}</strong></li>
+                    <li>
+                        <a href="{{ url_for('api.profiles') }}" class="btn btn-outline-info btn-sm text-nowrap me-2">切換使用者</a>
+                    </li>
+                </ul>
+
+                <a href="{{ url_for('api.logout') }}" class="text-nowrap"><button class="btn btn-outline-danger btn-sm text-nowrap" type="button">登出帳號</button></a>
+            </div>
+        </div>
+    </nav>
+    <br/><br/><br/>
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>

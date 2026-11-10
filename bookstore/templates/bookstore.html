@@ -1,0 +1,86 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}影片大廳 - StreamProject{% endblock title%}
+
+{% block content%}
+<div class="container-xxl mt-3">
+    {% if is_kid %}
+    <div class="alert alert-warning text-center shadow-sm">
+        🧒 <strong>目前已開啟「兒童防護模式 (isKid = TRUE)」</strong>：系統已自動過濾限制級與輔導級內容，僅顯示「普遍級」與「保護級」影片。
+    </div>
+    {% endif %}
+
+    <!-- 搜尋列與類別篩選 -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-5 mb-2">
+            <form class="d-flex" method="get" action="{{ url_for('bookstore.bookstore') }}">
+                {% if current_genre %}
+                <input type="hidden" name="genre_id" value="{{ current_genre }}">
+                {% endif %}
+                <input name="keyword" value="{{ keyword }}" class="form-control me-2" type="search" placeholder="搜尋影片片名（例如：星際效應）">
+                <button class="btn btn-dark text-nowrap" type="submit">搜尋</button>
+                {% if keyword or current_genre %}
+                <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-outline-secondary ms-2 text-nowrap">顯示全部</a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="col-md-7 mb-2 text-md-end">
+            <span class="me-2 text-muted">依類別 (Genre) 篩選：</span>
+            <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-sm {% if not current_genre %}btn-primary{% else %}btn-outline-primary{% endif %} me-1">全部</a>
+            {% for g in genres %}
+            <a href="{{ url_for('bookstore.bookstore', genre_id=g[0]) }}"
+               class="btn btn-sm {% if current_genre == g[0] %}btn-primary{% else %}btn-outline-primary{% endif %} me-1">
+               {{ g[1] }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 影片卡片列表 -->
+    <div class="row">
+        {% for movie in book_data %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">🎬 {{ movie.title }}</h5>
+                            <span class="badge {% if movie.rating == '限制級' %}bg-danger{% elif movie.rating in ['輔導15級', '輔導12級'] %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                {{ movie.rating }}
+                            </span>
+                        </div>
+                        <p class="text-muted mb-1" style="font-size: 0.9rem;">
+                            類別：<strong>{{ movie.genres }}</strong> ｜ 片長：{{ movie.duration }} 分鐘
+                        </p>
+                        <p class="mb-2">
+                            ⭐ 平均評分：<strong>{{ movie.avg_rating }}</strong> / 5
+                        </p>
+                        {% if movie.my_progress is not none %}
+                        <div class="mb-2">
+                            <small class="text-primary">上次觀看進度：{{ movie.my_progress }}%（我的評分：{{ movie.my_rating }}★）</small>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ movie.my_progress }}%;"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{{ url_for('bookstore.bookstore', pid=movie.movieId) }}" class="btn btn-primary w-100">
+                            ▶ 進入觀看 ／ 記錄進度與評分
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5 text-muted">
+            <h4>找不到符合條件的影片</h4>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content%}
