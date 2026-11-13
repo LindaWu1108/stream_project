@@ -1,89 +1,108 @@
 {% extends "frontstage.html" %}
-{% block head %}
-{{ super() }}
-{% endblock head %}
 
-{% block title %}訂閱紀錄與方案 - StreamProject{% endblock title%}
+{% block title %}訂閱方案管理 · StreamProject{% endblock title %}
 
 {% block content %}
-<div class="container-xl mt-4">
-    <h3 class="mb-3">💳 帳號訂閱紀錄與方案管理 ({{ email }})</h3>
+<div class="container-xxl">
+    <div class="mb-4">
+        <h2 class="fs-4 fw-bold text-white mb-1">💳 訂閱方案管理 ({{ email }})</h2>
+        <p class="text-secondary small mb-0">管理您的家庭成員上限、方案升級與歷史訂閱繳費明細</p>
+    </div>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <div class="alert alert-info">
-        {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+    <div class="alert alert-info py-2 px-3 mb-4 rounded-3 border-0" 
+         style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
+        {% for m in messages %}<div>ℹ️ {{ m }}</div>{% endfor %}
     </div>
     {% endif %}
     {% endwith %}
 
-    <!-- 目前方案與變更/續訂方案卡片 -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <strong>🔄 變更／續訂方案 (Plan)</strong>
+    <!-- Current Plan & Renewal Card -->
+    <div class="p-4 rounded-3 mb-4" style="background: var(--color-bg-surface); border: 1px solid var(--color-border);">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-3 border-bottom" style="border-color: var(--color-border) !important;">
+            <div>
+                <span class="text-secondary small d-block">目前生效方案</span>
+                <strong class="fs-5 text-white">【{{ current_sub.planName if current_sub else '未訂閱' }}】</strong>
+            </div>
             {% if current_sub %}
-            <span>目前方案：【{{ current_sub.planName }}】（已建立 {{ profile_count }} / {{ current_sub.maxScreens }} 人）</span>
-            {% endif %}
-        </div>
-        <div class="card-body">
-            {% if current_sub and current_sub.maxScreens >= 4 %}
-            <div class="alert alert-success py-2 mb-3">
-                🌟 您目前訂閱的<strong>【{{ current_sub.planName }}】</strong>已是本平台最高等級方案（上限 4 人）！您仍可於下方辦理續約或調整方案。
+            <div class="text-end">
+                <span class="cinema-pill cinema-pill-genre">
+                    已建立成員：{{ profile_count }} / {{ current_sub.maxScreens }} 人
+                </span>
+                <span class="cinema-pill cinema-pill-rating-safe ms-2">
+                    效期至 {{ current_sub.endDate }}
+                </span>
             </div>
             {% endif %}
-            <form method="post" action="{{ url_for('bookstore.orderlist') }}" class="row g-3 align-items-center">
-                <div class="col-md-8">
-                    <select name="plan_id" class="form-select">
-                        {% for p in plans %}
-                        <option value="{{ p[0] }}" {% if current_sub and current_sub.planId == p[0] %}selected{% endif %}>
-                            【{{ p[0] }}】{{ p[1] }} — 月費 NT${{ p[2] }}（人數上限 {{ p[3] }} 人）
-                            {% if current_sub and current_sub.planId == p[0] %} 👈 目前方案{% endif %}
-                            {% if p[3] >= 4 %} ⭐ 最高等級{% endif %}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-success w-100">確認變更／續約 30 天</button>
-                </div>
-            </form>
         </div>
+
+        {% if current_sub and current_sub.maxScreens >= 4 %}
+        <div class="p-3 mb-3 rounded-2 small" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25); color: #4ade80;">
+            🌟 您目前訂閱的<strong>【{{ current_sub.planName }}】</strong>已是本平台最高等級旗艦方案（最多支援 4 位使用者同時在線），您仍可於下方辦理續約延長天數。
+        </div>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('bookstore.orderlist') }}" class="row g-3 align-items-center">
+            <div class="col-md-8">
+                <label class="form-label text-secondary small fw-medium mb-1">選擇方案變更或續約：</label>
+                <select name="plan_id" class="cinema-input" style="cursor: pointer;">
+                    {% for p in plans %}
+                    <option value="{{ p[0] }}" {% if current_sub and current_sub.planId == p[0] %}selected{% endif %}>
+                        【{{ p[0] }}】{{ p[1] }} — 月費 NT${{ p[2] }}（人數上限 {{ p[3] }} 人）
+                        {% if current_sub and current_sub.planId == p[0] %} 👈 目前方案{% endif %}
+                        {% if p[3] >= 4 %} ⭐ 最高等級{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 pt-md-4">
+                <button type="submit" class="btn-cinema-primary w-100 py-2 fs-6">
+                    確認變更 ／ 續約 30 天
+                </button>
+            </div>
+        </form>
     </div>
 
-    <!-- 歷史訂閱紀錄表 (Subscription) -->
-    <table class="table table-bordered table-striped bg-white shadow-sm text-center align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>訂閱編號 (subId)</th>
-                <th>訂閱方案 (planName)</th>
-                <th>人數上限 (maxScreens)</th>
-                <th>付款金額 (amount)</th>
-                <th>付款日期 (payDate)</th>
-                <th>到期日 (endDate)</th>
-                <th>狀態 (status)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for s in data %}
-            <tr>
-                <td>{{ s.subId }}</td>
-                <td><strong>{{ s.planName }}</strong> ({{ s.planId }})</td>
-                <td>{{ s.maxScreens }} 人</td>
-                <td>NT${{ s.amount }}</td>
-                <td>{{ s.payDate }}</td>
-                <td>{{ s.endDate }}</td>
-                <td>
-                    <span class="badge {% if s.status in ['使用中', 'Active'] %}bg-success{% else %}bg-secondary{% endif %}">
-                        {{ s.status }}
-                    </span>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" class="text-muted py-3">尚無訂閱紀錄</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- History Table -->
+    <h3 class="fs-5 fw-bold text-white mb-3">📜 歷史訂閱明細 (Subscription)</h3>
+    <div class="table-responsive rounded-3 overflow-hidden" style="border: 1px solid var(--color-border);">
+        <table class="cinema-table mb-0 text-center align-middle">
+            <thead>
+                <tr>
+                    <th>訂閱編號</th>
+                    <th>訂閱方案</th>
+                    <th>人數上限</th>
+                    <th>付款金額</th>
+                    <th>付款日期</th>
+                    <th>到期日</th>
+                    <th>狀態</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in data %}
+                <tr>
+                    <td class="text-secondary font-monospace">#{{ s.subId }}</td>
+                    <td><strong class="text-white">{{ s.planName }}</strong> <span class="text-secondary small">({{ s.planId }})</span></td>
+                    <td>{{ s.maxScreens }} 人</td>
+                    <td class="text-white fw-bold">NT${{ s.amount }}</td>
+                    <td class="text-secondary small">{{ s.payDate }}</td>
+                    <td class="text-secondary small">{{ s.endDate }}</td>
+                    <td>
+                        {% if s.status in ['使用中', 'Active'] %}
+                        <span class="cinema-pill cinema-pill-rating-safe">{{ s.status }}</span>
+                        {% else %}
+                        <span class="cinema-pill cinema-pill-genre">{{ s.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-secondary py-4">目前尚無歷史訂閱明細</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock content %}

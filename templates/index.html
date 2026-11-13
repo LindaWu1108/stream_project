@@ -1,21 +1,80 @@
 {% extends "base.html" %}
-{% block head %}
-{{ super() }}
-{% endblock head %}
 
-{% block title %}StreamProject 影音串流平台{% endblock title%}
+{% block title %}StreamProject · 極致影音串流平台{% endblock title %}
 
-{% block content%}
-<div class="position-absolute top-50 start-50 translate-middle text-center">
-    <img class="index_pic" src="{{ url_for('static', filename='./img/home.png') }}?v=2">
-    <h1 class="index_title">StreamProject 影音串流平台</h1>
-    <div class="btn_div">
-        <a href="{{ url_for('api.register') }}">
-            <button class="index_btn">註冊訂閱</button>
+{% block content %}
+<div class="d-flex flex-column justify-content-between min-vh-100">
+    <!-- Top Header Navigation -->
+    <header class="py-3 px-4 px-md-5 d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('index') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+            <span style="font-size: 1.5rem;">🎬</span>
+            <span class="fs-4 fw-bold text-white tracking-tight">Stream<span style="color: var(--color-accent);">Project</span></span>
         </a>
-        <a href="{{ url_for('api.login') }}">
-            <button class="index_btn">會員登入</button>
-        </a>
-    </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('api.login') }}" class="btn-cinema-ghost py-2 px-3 fs-6">會員登入</a>
+            <a href="{{ url_for('api.register') }}" class="btn-cinema-primary py-2 px-3 fs-6 d-none d-sm-inline-flex">註冊訂閱</a>
+        </div>
+    </header>
+
+    <!-- Hero Showcase Section -->
+    <main class="container text-center my-auto py-5" style="max-width: 860px;">
+        <div class="mb-3">
+            <span class="cinema-pill cinema-pill-genre px-3 py-1 text-white border-0" style="background: rgba(229, 9, 20, 0.18); border: 1px solid rgba(229, 9, 20, 0.35) !important;">
+                ✦ 資料庫管理系統 · 劇院級串流服務
+            </span>
+        </div>
+        
+        <h1 class="display-4 fw-extrabold text-white mb-3" style="letter-spacing: -0.03em; line-height: 1.15;">
+            精彩影音，隨時啟動<br class="d-none d-md-block"/>您的專屬串流片單
+        </h1>
+        
+        <p class="fs-5 text-secondary mb-4 mx-auto" style="max-width: 620px; line-height: 1.6; color: var(--color-text-muted) !important;">
+            支援家庭多子成員 Profile 獨立切換、智慧兒童安全分級過濾，以及高精度的觀看歷程與評分機制。
+        </p>
+
+        <div class="d-flex flex-wrap justify-content-center gap-3 mb-5">
+            <a href="{{ url_for('api.register') }}" class="btn-cinema-primary py-3 px-4 fs-5 text-decoration-none">
+                即刻註冊訂閱
+            </a>
+            <a href="{{ url_for('api.login') }}" class="btn-cinema-ghost py-3 px-4 fs-5 text-decoration-none">
+                會員登入觀看
+            </a>
+        </div>
+
+        <!-- 3 Feature Cards (Hallmark compliant, no card-in-card, elevated surface) -->
+        <div class="row g-3 text-start mt-4">
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 h-100" style="background: var(--color-bg-surface); border: 1px solid var(--color-border);">
+                    <div class="text-white fw-bold fs-5 mb-2">🧑‍🤝‍🧑 家庭多子帳號</div>
+                    <p class="mb-0 text-secondary" style="font-size: 0.9rem; line-height: 1.5;">
+                        弱實體 Profile 架構，依訂閱方案可建立 1 至 4 位子使用者，各自保留獨立觀看紀錄。
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 h-100" style="background: var(--color-bg-surface); border: 1px solid var(--color-border);">
+                    <div class="text-white fw-bold fs-5 mb-2">🛡️ 兒童保護過濾</div>
+                    <p class="mb-0 text-secondary" style="font-size: 0.9rem; line-height: 1.5;">
+                        一鍵啟用兒童模式，系統自動過濾限制級與輔導級影片，專屬乾淨普遍級片單。
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 h-100" style="background: var(--color-bg-surface); border: 1px solid var(--color-border);">
+                    <div class="text-white fw-bold fs-5 mb-2">⏱️ 歷程多值時間戳</div>
+                    <p class="mb-0 text-secondary" style="font-size: 0.9rem; line-height: 1.5;">
+                        完整實作 Watch_Time 多值屬性，精準記錄每次點閱觀看時間點與觀看進度百分比。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Minimal Footer -->
+    <footer class="py-4 text-center text-secondary border-top" style="border-color: var(--color-border) !important; font-size: 0.85rem;">
+        <div class="container">
+            StreamProject © 2026 · 資料庫管理系統第十組專題
+        </div>
+    </footer>
 </div>
-{% endblock content%}
+{% endblock content %}

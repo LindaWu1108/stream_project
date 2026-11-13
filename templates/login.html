@@ -1,42 +1,67 @@
 {% extends "base.html" %}
-{% block head %}
-{{ super() }}
-{% endblock head %}
 
-{% block title %}會員登入 - StreamProject{% endblock title%}
+{% block title %}會員登入 · StreamProject{% endblock title %}
 
-{% block content%}
-<div class="position-absolute top-50 start-50 translate-middle outer_div">
-    <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}?v=2"></a>
-    <h1 class="register_title mb-3 mt-3">串流平台登入</h1>
-    <p class="text-muted text-center" style="font-size: 0.85rem;">
-        家庭測試帳號：<code>family@example.com</code>（密碼 <code>1234</code>）<br/>
-        管理員帳號：<code>admin@example.com</code>（密碼 <code>admin</code>）
-    </p>
-    <div class="form_div">
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 px-3 py-5">
+    <div class="cinema-card">
+        <div class="text-center mb-4">
+            <a href="{{ url_for('index') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
+                <span style="font-size: 2rem;">🎬</span>
+                <span class="fs-3 fw-bold text-white tracking-tight">Stream<span style="color: var(--color-accent);">Project</span></span>
+            </a>
+            <h2 class="fs-4 fw-bold text-white mb-1">登入您的串流帳號</h2>
+            <p class="text-secondary small mb-0" style="color: var(--color-text-muted) !important;">
+                選擇使用者設定檔並同步觀看紀錄
+            </p>
+        </div>
+
+        <!-- Quick Credentials Hint -->
+        <div class="p-3 mb-4 rounded-3" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--color-border); font-size: 0.82rem;">
+            <div class="text-secondary mb-1">⚡ 快速測試帳號：</div>
+            <div class="d-flex justify-content-between text-white-50">
+                <span>家庭方案：<code class="text-info">family@example.com</code> / <code>1234</code></span>
+            </div>
+            <div class="d-flex justify-content-between text-white-50 mt-1">
+                <span>後台管理：<code class="text-info">admin@example.com</code> / <code>admin</code></span>
+            </div>
+        </div>
+
         <form method="post" action="{{ url_for('api.login') }}">
-            <p class="mb-4">
-                Email：<input type="text" name="account" placeholder="family@example.com" required/>
-            </p>
-            <p class="mb-4">
-                密碼：<input type="password" name="password" placeholder="1234" required/>
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <p class="same_accoount">
-                    {% for i in messages %}
-                        {{ i }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-                {% endwith %}
-            </p>
-            <p class="mb-4">
-                <a href="{{ url_for('index') }}">
-                    <button type="button" class="register_btn">回上頁</button>
+            <div class="mb-3">
+                <label class="form-label text-secondary small fw-medium mb-1">電子信箱 (Email)</label>
+                <input type="email" name="account" class="cinema-input" placeholder="例如：family@example.com" required autofocus>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label text-secondary small fw-medium mb-1">密碼 (Password)</label>
+                <input type="password" name="password" class="cinema-input" placeholder="輸入您的帳號密碼" required>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-danger py-2 px-3 mb-3 text-start small border-0" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">
+                {% for m in messages %}
+                <div>⚠️ {{ m }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn-cinema-primary py-2 fs-6">
+                    登入帳號
+                </button>
+                <a href="{{ url_for('index') }}" class="btn-cinema-subtle text-center py-2 text-decoration-none">
+                    返回首頁
                 </a>
-                <button type="submit" class="register_btn">登入</button>
-            </p>
+            </div>
         </form>
+
+        <div class="text-center mt-4 pt-3 border-top" style="border-color: var(--color-border) !important;">
+            <span class="text-secondary small">還沒有帳號？</span>
+            <a href="{{ url_for('api.register') }}" class="small fw-semibold ms-1" style="color: var(--color-accent);">立即註冊訂閱</a>
+        </div>
     </div>
 </div>
-{% endblock content%}
+{% endblock content %}

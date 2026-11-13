@@ -1,52 +1,72 @@
 {% extends "base.html" %}
-{% block head %}
-{{ super() }}
-{% endblock head %}
 
-{% block title %}註冊訂閱 - StreamProject{% endblock title%}
+{% block title %}註冊訂閱 · StreamProject{% endblock title %}
 
-{% block content%}
-<div class="position-absolute top-50 start-50 translate-middle outer_div">
-    <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}?v=2"></a>
-    <h1 class="register_title mb-3 mt-3">註冊帳號與訂閱方案</h1>
+{% block content %}
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 px-3 py-5">
+    <div class="cinema-card" style="max-width: 520px;">
+        <div class="text-center mb-4">
+            <a href="{{ url_for('index') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
+                <span style="font-size: 2rem;">🎬</span>
+                <span class="fs-3 fw-bold text-white tracking-tight">Stream<span style="color: var(--color-accent);">Project</span></span>
+            </a>
+            <h2 class="fs-4 fw-bold text-white mb-1">建立帳號並選擇訂閱方案</h2>
+            <p class="text-secondary small mb-0" style="color: var(--color-text-muted) !important;">
+                註冊後即可建立專屬 Profile 並暢享高畫質片庫
+            </p>
+        </div>
 
-    <div class="form_div">
         <form method="post" action="{{ url_for('api.register') }}">
-            <p class="mb-3">
-                主使用者名稱 (Profile)：<input type="text" name="username" placeholder="例如：爸爸、小華" required/>
-            </p>
+            <div class="mb-3">
+                <label class="form-label text-secondary small fw-medium mb-1">主使用者名稱 (Profile 暱稱)</label>
+                <input type="text" name="username" class="cinema-input" placeholder="例如：爸爸、Alice" required autofocus>
+            </div>
 
-            <p class="mb-3">
-                帳號 (Email)：<input type="email" name="account" placeholder="example@gmail.com" required/>
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <p class="same_accoount">
-                    {% for m in messages %}{{ m }}{% endfor %}
-                </p>
-                {% endif %}
-                {% endwith %}
-            </p>
+            <div class="mb-3">
+                <label class="form-label text-secondary small fw-medium mb-1">電子信箱 (Email 帳號)</label>
+                <input type="email" name="account" class="cinema-input" placeholder="name@example.com" required>
+            </div>
 
-            <p class="mb-3">
-                密碼：<input type="password" name="password" required/>
-            </p>
+            <div class="mb-3">
+                <label class="form-label text-secondary small fw-medium mb-1">設定登入密碼</label>
+                <input type="password" name="password" class="cinema-input" placeholder="至少 4 碼以上的密碼" required>
+            </div>
 
-            <div class="btn_div mb-4" style="margin-bottom: 1rem;">
-                <p class="option_div">選擇訂閱方案 (Plan)：</p>
-                <select name="plan_id">
+            <div class="mb-4">
+                <label class="form-label text-secondary small fw-medium mb-1">選擇訂閱方案 (Plan)</label>
+                <select name="plan_id" class="cinema-input" style="cursor: pointer;">
                     {% for p in plans %}
-                    <option value="{{ p[0] }}">{{ p[1] }} - NT${{ p[2] }}/月（上限 {{ p[3] }} 人）</option>
+                    <option value="{{ p[0] }}">
+                        {{ p[1] }} — NT${{ p[2] }}/月（支援 {{ p[3] }} 位使用者）
+                    </option>
                     {% endfor %}
                 </select>
             </div>
 
-            <p>
-                <a href="{{ url_for('index') }}">
-                    <button type="button" class="register_btn">回上頁</button>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-danger py-2 px-3 mb-3 text-start small border-0" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">
+                {% for m in messages %}
+                <div>⚠️ {{ m }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn-cinema-primary py-2 fs-6">
+                    確認註冊並啟用訂閱
+                </button>
+                <a href="{{ url_for('index') }}" class="btn-cinema-subtle text-center py-2 text-decoration-none">
+                    返回首頁
                 </a>
-                <button type="submit" class="register_btn">註冊並訂閱</button>
-            </p>
+            </div>
         </form>
+
+        <div class="text-center mt-4 pt-3 border-top" style="border-color: var(--color-border) !important;">
+            <span class="text-secondary small">已經有帳號？</span>
+            <a href="{{ url_for('api.login') }}" class="small fw-semibold ms-1" style="color: var(--color-accent);">直接登入</a>
+        </div>
     </div>
 </div>
-{% endblock content%}
+{% endblock content %}
