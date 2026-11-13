@@ -55,10 +55,14 @@
         {% for movie in book_data %}
         <div class="col-12 col-sm-6 col-lg-4">
             <div class="movie-card">
-                <!-- Poster Header Decoration -->
-                <div class="movie-poster-header">
-                    <div class="w-100 d-flex justify-content-between align-items-center position-relative" style="z-index: 1;">
-                        <span class="fs-4">🎬</span>
+                <!-- Official Movie Poster Header -->
+                <div class="movie-poster-wrap">
+                    <img src="{{ url_for('static', filename='img/posters/' ~ movie.movieId ~ '.jpg') }}" 
+                         alt="{{ movie.title }}" 
+                         class="movie-poster-img"
+                         onerror="this.src='{{ url_for('static', filename='img/home.png') }}';">
+                    <div class="movie-poster-overlay"></div>
+                    <div class="movie-poster-badge">
                         {% if movie.rating == '限制級' %}
                         <span class="cinema-pill cinema-pill-rating-danger">限制級 18+</span>
                         {% elif movie.rating in ['輔導15級', '輔導12級'] %}

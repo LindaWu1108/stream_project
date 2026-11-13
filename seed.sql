@@ -46,7 +46,8 @@ INSERT INTO Movie (movieId, title, duration, rating) VALUES
 ('M003', '腦筋急轉彎2', 96, '普遍級'),
 ('M004', '厲陰宅', 112, '限制級'),
 ('M005', '關於我和鬼變成家人的那件事', 130, '輔12'),
-('M006', '沙丘：第二部', 166, '保護級')
+('M006', '沙丘：第二部', 166, '保護級'),
+('M007', '復仇者聯盟：終局之戰 加碼重映', 183, '普遍級')
 ON CONFLICT (movieId) DO NOTHING;
 
 -- 7. 屬於 (Belong - Movie 與 Genre 的 M:N 關係)
@@ -60,7 +61,9 @@ INSERT INTO Belong (movieId, genreId) VALUES
 ('M005', 'G01'),
 ('M005', 'G03'),
 ('M006', 'G01'),
-('M006', 'G02')
+('M006', 'G02'),
+('M007', 'G01'),
+('M007', 'G02')
 ON CONFLICT (movieId, genreId) DO NOTHING;
 
 -- 8. 觀看 (Watch - Profile 與 Movie 的 M:N 關係，含關係屬性 progress, rating)

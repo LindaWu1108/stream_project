@@ -14,6 +14,16 @@
         <!-- Left: Movie Meta Details -->
         <div class="col-lg-5">
             <div class="p-4 rounded-3 h-100" style="background: var(--color-bg-surface); border: 1px solid var(--color-border);">
+                <!-- Poster Banner -->
+                <div class="mb-3 rounded-2 overflow-hidden position-relative" style="height: 240px; background: #11141c;">
+                    <img src="{{ url_for('static', filename='img/posters/' ~ data.movieId ~ '.jpg') }}" 
+                         alt="{{ data.title }}" 
+                         class="w-100 h-100" 
+                         style="object-fit: cover; object-position: center top;"
+                         onerror="this.style.display='none';">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to top, var(--color-bg-surface) 0%, transparent 70%);"></div>
+                </div>
+
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <span class="cinema-pill cinema-pill-genre">ID #{{ data.movieId }}</span>
                     {% if data.rating == '限制級' %}
